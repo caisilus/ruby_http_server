@@ -1,24 +1,28 @@
 # frozen_string_literal: true
 
 require 'socket'
-# require_relative 'lib/logger'
+require 'logger'
 require_relative './http_request'
 require_relative './static_files_server'
 
 class HTTPServer
-  def initialize(app, port: 5678)
+  def initialize(app, logger: Logger.new($stdout), port: 5678)
     @tcp_server = TCPServer.new port
     @app = app
+    @logger = logger
   end
 
   def start
     while (tcp_socket = @tcp_server.accept)
+      client_ip = tcp_socket.peeraddr[3]
+
       request = HTTPRequest.new(tcp_socket)
-      puts "METHOD: #{request.method}, PATH: #{request.path}, PROTO: #{request.protocol}"
 
       response = @app.serve(request)
 
       write_response(tcp_socket, response)
+
+      @logger.info("IP: #{client_ip}; PATH: #{request.path}; ANSWER: #{response.first}")
     end
   end
 
