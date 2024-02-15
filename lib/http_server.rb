@@ -28,8 +28,8 @@ class HTTPServer
 
   private
 
-  def write_response(tcp_socket, app_response)
-    status, headers, body = app_response
+  def write_response(tcp_socket, response)
+    status, headers, body = response
 
     tcp_socket.print "HTTP/1.1 #{status}\r\n"
 

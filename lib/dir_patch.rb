@@ -1,13 +1,10 @@
 class Dir
   def filenames(recursive: false)
-    filenames = []
-    each_child do |entry|
+    children.map do |entry|
       entry_fullpath = File.join(path, entry)
 
-      filenames.push(*filenames_for_entry(entry_fullpath, recursive))
-    end
-
-    filenames
+      filenames_for_entry(entry_fullpath, recursive)
+    end.flatten
   end
 
   private

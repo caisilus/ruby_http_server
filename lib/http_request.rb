@@ -2,11 +2,12 @@ class HTTPRequest
   attr_reader :headers, :body, :method, :path, :protocol
 
   def initialize(tcp_socket, body_delimeter_regex: /\A[ \n\r\t]+\z/)
-    @method, @path, @protocol = tcp_socket.gets.split
     @body_delimeter_regex = body_delimeter_regex
 
+    @method, @path, @protocol = tcp_socket.gets.split
+
     @headers = {}
-    read_headers(tcp_socket)
+    read_headers(tcp_socket, body_delimeter_regex)
 
     @body = tcp_socket.read(@headers['Content-Length'].to_i)
   end
