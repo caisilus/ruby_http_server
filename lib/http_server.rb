@@ -22,21 +22,31 @@ class HTTPServer
     end
   end
 
+  private
+
   def write_response(tcp_socket, app_response)
     status, headers, body = app_response
 
     tcp_socket.print "HTTP/1.1 #{status}\r\n"
 
-    headers.each do |key, value|
-      tcp_socket.print "#{key}: #{value}\r\n"
-    end
+    write_headers(tcp_socket, headers)
 
     tcp_socket.print "\r\n"
 
+    write_body(tcp_socket, body)
+
+    tcp_socket.close
+  end
+
+  def write_headers(tcp_socket, headers)
+    headers.each do |key, value|
+      tcp_socket.print "#{key}: #{value}\r\n"
+    end
+  end
+
+  def write_body(tcp_socket, body)
     body.each do |part|
       tcp_socket.print part
     end
-
-    tcp_socket.close
   end
 end
