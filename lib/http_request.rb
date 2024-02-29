@@ -7,7 +7,7 @@ class HTTPRequest
     @method, @path, @protocol = tcp_socket.gets.split
 
     @headers = {}
-    read_headers(tcp_socket, body_delimeter_regex)
+    read_headers(tcp_socket)
 
     @body = tcp_socket.read(@headers['Content-Length'].to_i)
   end
