@@ -13,6 +13,8 @@ class StaticFilesServer
   end
 
   def serve(request, root: 'index.html')
+    sleep 2
+
     filename = filename_for_http_path(request.path, root: root)
 
     return not_found unless @filenames.include?(filename)

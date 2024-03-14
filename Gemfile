@@ -1,5 +1,5 @@
-source "https://rubygems.org"
-gem "ruby-lsp"
-gem "rubocop"
+source 'https://rubygems.org'
+gem 'rubocop'
+gem 'ruby-lsp'
 
-gem "debug", "~> 1.9"
+gem 'debug', '~> 1.9'

@@ -10,13 +10,32 @@ class HTTPServer
     @tcp_server = TCPServer.new port
     @app = app
     @logger = logger
+
+    Thread.main[:threads] = []
   end
 
   def start
-    while (tcp_socket = @tcp_server.accept)
+    Thread.main[:keep_going] = true
+
+    while keep_going?
+      puts 'loop step'
+      Thread.main[:threads] << request_thread
+    end
+  end
+
+  private
+
+  def keep_going?
+    Thread.main[:keep_going]
+  end
+
+  def request_thread
+    Thread.new(@tcp_server.accept) do |tcp_socket|
       client_ip = tcp_socket.peeraddr[3]
 
       request = HTTPRequest.new(tcp_socket)
+
+      @logger.info("METHOD: request.method; PATH: #{request.path}")
 
       response = @app.serve(request)
 
@@ -25,8 +44,6 @@ class HTTPServer
       @logger.info("IP: #{client_ip}; PATH: #{request.path}; ANSWER: #{response.first}")
     end
   end
-
-  private
 
   def write_response(tcp_socket, response)
     status, headers, body = response
